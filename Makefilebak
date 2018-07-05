@@ -1,0 +1,29 @@
+#***************************************************
+# CopyRight
+# All Rights Reserved
+# Vinson creat just for Makefile test
+# Date : 2005.12.31
+#***************************************************
+ifeq (0, $(MAKELEVEL))
+exec: exec1 exec2
+	@echo MakeLevel = 0
+endif
+
+#exec:  exec1 exec2
+
+exec1:
+	@cd /home/vinson/project/TR069;pwd
+
+exec2:
+	@cd /home/vinson/project/TR069
+	@pwd
+
+copy:
+	cp /home/vinson/project/cvs cvs_bak
+
+delete:
+	rm -f cvs_bak
+
+#ifeq (0, $(MAKELEVEL))
+#	@echo MakeLevel = 0
+#endif

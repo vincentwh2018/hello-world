@@ -1,0 +1,31 @@
+#!/bin/bash
+echo -e "\nifndef BRCM_BOARD" > hostTools/Makefile
+echo -e "BRCM_BOARD = bcm963xx" >> hostTools/Makefile
+echo -e "endif" >> hostTools/Makefile
+echo -e "\nifndef TARGETS_DIR" >> hostTools/Makefile
+echo -e "TARGETS_DIR = ../targets" >> hostTools/Makefile
+echo -e "endif" >> hostTools/Makefile
+echo -e "\nifndef INC_BRCMBOARDPARMS_PATH" >> hostTools/Makefile
+echo -e "INC_BRCMBOARDPARMS_PATH = \$(TARGETS_DIR)/boardparms" >> hostTools/Makefile
+echo -e "endif" >> hostTools/Makefile
+echo -e "\nLZMADIR = ./lzma/compress" >> hostTools/Makefile
+echo -e "\nINCLUDEDIR = -I\$(INC_BRCMDRIVER_PUB_PATH)/\$(BRCM_BOARD) -I. -I\$(LZMADIR) -I\$(INC_BRCMBOARDPARMS_PATH)/\$(BRCM_BOARD)" >> hostTools/Makefile
+echo -e "\nLZMAOBJS = 7zapi.o 7zlzma.o AriBitCoder.o IInOutStreams.o LenCoder.o LiteralCoder.o LZMA.o LZMAEncoder.o OutByte.o WindowIn.o" >> hostTools/Makefile
+echo -e "\n#WARNINGS= -Wall" >> hostTools/Makefile
+echo -e "\n#export DEFS		= -DDEBUG" >> hostTools/Makefile
+echo -e "\nexport CFLAGS		= \$(DEFS) \$(WARNINGS) -O2 -DGNU \$(INCLUDEDIR)" >> hostTools/Makefile
+echo -e "\nvpath %.cpp \$(LZMADIR)" >> hostTools/Makefile
+echo -e "\nall: build_mkfs" >> hostTools/Makefile
+echo -e "\nbuild_mkfs: mksquashfs \$(LZMAOBJS)" >> hostTools/Makefile
+echo -e "\nmksquashfs:  squashfs/*.c squashfs/*.h \$(LZMAOBJS)" >> hostTools/Makefile
+echo -e "	@if [ ! -e /usr/include/zlib.h ]; then \\" >> hostTools/Makefile
+echo -e "	   echo *****You need to install zlib-devel package to build mksquashfs! ; \\" >> hostTools/Makefile
+echo -e "	   echo *****You may find it in your Linux distribution CDs. ; \\" >> hostTools/Makefile
+echo -e "	   exit ;\\" >> hostTools/Makefile
+echo -e "	fi" >> hostTools/Makefile
+echo -e "	gcc \$(CFLAGS) -Isquashfs -c squashfs/*.c" >> hostTools/Makefile
+echo -e "	g++  -o mksquashfs mksquashfs.o read_fs.o sort.o \$(LZMAOBJS) -lz" >> hostTools/Makefile
+echo -e "\n\$(LZMAOBJS): %.o: %.cpp" >> hostTools/Makefile
+echo -e "	g++ -c \$(CFLAGS) $^ -o \$@" >> hostTools/Makefile
+echo -e "\nclean:" >> hostTools/Makefile
+echo -e "	rm -f mksquashfs" >> hostTools/Makefile
